@@ -9,7 +9,7 @@ var Web3 = require("web3");
 var metaCoinArtifact = require("../build/contracts/TuniCoin.json");
 
 /***** BLOCKCHAIN CONFIG *****/
-const blockchainConfig = {
+module.exports =  blockchainConfig = {
     web3: null,
     account: null,
     meta: null,
@@ -81,4 +81,3 @@ const blockchainConfig = {
     },
   };
   
-  module.exports = blockchainConfig;

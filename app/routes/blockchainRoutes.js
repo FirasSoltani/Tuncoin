@@ -6,10 +6,10 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 var cors = require('cors');
 var Web3 = require("web3");
-var metaCoinArtifact = require("../build/contracts/TuniCoin.json");
+var metaCoinArtifact = require("../../build/contracts/TuniCoin.json");
 const router = express.Router();
 
-const {index, getGas, createAccount, send, getEth, getBalance, transactionInfo, myAccount, changeAccount, history} = require("../functions/blockchain");
+const {index, getGas, send, getEth, getBalance, transactionInfo, myAccount, changeAccount, history, createAccount} = require("../functions/blockchain");
 
 router.get('/index', index);
 router.get('/createAccount', createAccount);
