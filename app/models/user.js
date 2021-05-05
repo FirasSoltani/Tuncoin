@@ -7,6 +7,7 @@ const userSchema = mongoose.Schema({
     email: { type: String, require: true, unique: true, lowercase: true },
     password: { type: String, require: true },
    // phone: { type: Number, require: true, unique: true },
+   address:{ type: String, require: true, unique: true},
     balance : { type: Number, default: parseFloat(0)},
     isConfimed: {type : Boolean, default: false},
     resetCode: { data: String, default: ''},

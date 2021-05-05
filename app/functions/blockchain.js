@@ -9,9 +9,8 @@ const mailgun = require("mailgun-js");
 const firebaseAdmin = require("firebase-admin");
 var metaCoinArtifact = require("../../build/contracts/TuniCoin.json");
 var Web3 = require("web3");
-// const { blockchainConfig } = require('../config.js');
 /***** BLOCKCHAIN CONFIG *****/
-const blockchainConfig = {
+exports.blockchainMethods = blockchainConfig = {
   web3: null,
   account: null,
   meta: null,
@@ -34,13 +33,12 @@ const blockchainConfig = {
       this.refreshBalance(this.account);
     } catch (error) {
       console.log(error);
-      //console.error("Could not connect to contract or chain.");
     }
   },
-  
+
   createAccount: async function () {
     let account = this.web3.eth.accounts.create();
-    return account;
+    return account.address;
   },
 
   refreshBalance: async function (address) {
@@ -51,7 +49,8 @@ const blockchainConfig = {
   },
 
 
-  sendCoin: async function (receiver, amount) {
+  sendCoin: async function ( receiver, amount) {
+    console.log("account: "+  this.account);
     const { transfer } = this.meta.methods;
     await transfer(receiver, amount)
       .send({ from: this.account })
@@ -83,50 +82,44 @@ const blockchainConfig = {
     });
   },
 };
-
-exports.index = (req, res) => {
+/*
+exports.getBalance = (address, res) => {
   blockchainConfig.start();
-  balance = blockchainConfig.refreshBalance(blockchainConfig.account);
+  balance = blockchainConfig.refreshBalance(address);
   balance.then((value) => {
-    res.send("Current balance : " + value);
+    res.json({ balance: value });
   });
 };
 
-exports.createAccount = (req, res) => {
+exports.createAccount = ( res) => {
   blockchainConfig.start();
   address = blockchainConfig.createAccount();
   console.log(address);
   address.then((value) => {
     res.send(value);
+    console.log("value: "+value);
   });
 };
 
-exports.send = (req, res) => {
+exports.send = (sender, receiver, amount, res) => {
   blockchainConfig.start();
   console.log(req);
-  Success = blockchainConfig.sendCoin(req.body.receiver, req.body.amount);
+  Success = blockchainConfig.sendCoin(receiver, amount);
   if (Success) {
-    blockchainConfig.refreshBalance(blockchainConfig.account).then((value) => {
-      res.send("Success new balance is : " + value);
+    blockchainConfig.refreshBalance(sender).then((value) => {
+      res.json({ return: value });
     });
   } else {
-    res.send("Failed");
+    res.json({ return: "failed" });
   }
 };
 
-exports.getBalance = (req, res) => {
-  blockchainConfig.start();
-  balance = blockchainConfig.refreshBalance(req.query.address);
-  balance.then((value) => {
-    res.send(value);
-  });
-};
 
 exports.getGas = (req, res) => {
   blockchainConfig.start();
   gas = blockchainConfig.getGasPrice();
   gas.then((value) => {
-    res.send(value);
+    res.json({ gas: value });
   });
 };
 
@@ -134,29 +127,31 @@ exports.getEth = (req, res) => {
   blockchainConfig.start();
   balance = blockchainConfig.getEthBalance(blockchainConfig.account);
   balance.then((value) => {
-    res.send(value);
+    res.json({ eth: value });
   });
+};
+
+
+exports.myAccount = (res) => {
+  blockchainConfig.start();
+  blockchainConfig.getAccount().then((value) => {
+    res.json({ account: value });
+    console.log("value:" + value);
+  });
+};
+
+exports.changeAccount = (accountAddress) => {
+  blockchainConfig.start();
+  blockchainConfig.account = accountAddress;
+  //res.json({ account: blockchainConfig.account });
 };
 
 exports.transactionInfo = (req, res) => {
   blockchainConfig.start();
-  transaction = blockchainConfig.getTransaction(req.query.transaction);
+  transaction = blockchainConfig.getTransaction(req.body.transaction);
   transaction.then((value) => {
-    res.send(value);
+    res.json({ result: value });
   });
-};
-
-exports.myAccount = (req, res) => {
-  blockchainConfig.start();
-  blockchainConfig.getAccount().then((value) => {
-    res.send(value);
-  });
-};
-
-exports.changeAccount = (req, res) => {
-  blockchainConfig.start();
-  blockchainConfig.account = req.body.account;
-  res.send("Success");
 };
 
 exports.history = (req, res) => {
@@ -172,4 +167,4 @@ exports.history = (req, res) => {
     });
     res.send(value);
   });
-};
+}; */

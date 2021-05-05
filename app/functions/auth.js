@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const mailgun = require("mailgun-js");
-
+const method = require("./blockchain");
 /*const Web3 = require("web3");
 const Tuncoin = require("../build/contracts/Tuncoin.json");
 const ethWallet = require("ethereumjs-wallet");*/
@@ -34,11 +34,14 @@ exports.signup = (req, res, next) => {
           if (error) {
             return res.status(500).json({ error: error });
           } else {
+            method.blockchainMethods.start();
+  Promise.resolve(method.blockchainMethods.createAccount()).then((newAddress) => {console.log("aaaa: " + newAddress)
+
             const user = new User({
               _id: new mongoose.Types.ObjectId(),
               email: req.body.email,
               password: hash,
-              //  address: EthWallet.getAddressString(),
+               address: newAddress,
               //  privateKey: EthWallet.getPrivateKeyString(),
             });
             const token = jwt.sign(
@@ -79,7 +82,7 @@ exports.signup = (req, res, next) => {
                   .status(401)
                   .json({ message: "Mail exists!", error: error });
               });
-          }
+          });}
         });
       }
     });
