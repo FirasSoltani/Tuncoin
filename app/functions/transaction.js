@@ -35,39 +35,41 @@ exports.transaction = (req, res, next) => {
       // method.blockchainMethods.ge
       Promise.resolve(method.blockchainMethods.getEthBalance(sender)).then((coins) => {
         console.log("aaaa: " + coins)
-        console.log("typeof; "+typeof coins);
-        const youBalance = parseFloat(coins);
-        console.log("typeof2 ; "+typeof youBalance);
-        if (youBalance > amount) {
+        console.log("typeof; " + typeof coins);
+        const senderBalance = parseFloat(coins);
+        console.log("typeof2 ; " + typeof youBalance);
+        if (senderBalance > amount) {
           console.log("DO SOMETHING");
           //  if (doc.balance > amount) {
-            const x = youBalance - amount;
-            console.log("typeof X ; "+typeof x+"docs.balance: "+typeof doc.balance);
-            console.log(doc.balance);
-          console.log("r: "+typeof receiver+"s: "+typeof sender+"a: "+typeof amount);
-            User.updateOne({ address: sender }, {
-              $set: { balance: x },
-              $addToSet: {
-                transaction: [
-                  {
-                    typeTransaction: "Sending",
-                    secondUser: receiver,
-                    date: Date.now(),
-                    amount: amount,
-                  },
-                ],
-              },
-            }, function (err, result) {
-              if (err) {
-                res.send(err);
-              } else {
-                // SEND MAIL CODE GOES HERE!
-                console.log("code send mail here !");
-                // SEND MAIL CODE ENDS HERE!
-                console.log("update mtaa user lekher");
-                User.find({ address: receiver }).exec().then((docs) => {
-                  if (docs) {
-                    const y = youBalance + amount;
+          const x = senderBalance - amount;
+          console.log("typeof X ; " + typeof x + "docs.balance: " + typeof doc.balance);
+          console.log(doc.balance);
+          console.log("r: " + typeof receiver + "s: " + typeof sender + "a: " + typeof amount);
+          User.updateOne({ address: sender }, {
+            $set: { balance: x },
+            $addToSet: {
+              transaction: [
+                {
+                  typeTransaction: "Sending",
+                  secondUser: receiver,
+                  date: Date.now(),
+                  amount: amount,
+                },
+              ],
+            },
+          }, function (err, result) {
+            if (err) {
+              res.send(err);
+            } else {
+              // SEND MAIL CODE GOES HERE!
+              console.log("code send mail here !");
+              // SEND MAIL CODE ENDS HERE!
+              console.log("update mtaa user lekher");
+              User.find({ address: receiver }).exec().then((docs) => {
+                if (docs) {
+                  Promise.resolve(method.blockchainMethods.getEthBalance(receiver)).then((coins) => {
+                    const receiverBalance = parseFloat(coins);
+                    const y = receiverBalance + amount;
                     User.updateOne({ address: receiver }, {
                       $set: { balance: y },
                       $addToSet: {
@@ -90,20 +92,23 @@ exports.transaction = (req, res, next) => {
                         console.log("method mtaa blockchain");
                         //Promise.resolve(method.blockchainMethods.createAccount()).then((newAddress) => {console.log("aaaa: " + newAddress)});
                         method.blockchainMethods.account = sender;
-                        Promise.resolve( method.blockchainMethods.sendCoin(receiver, amount)).then((bool) => {console.log("result: "+bool)});
-                     console.log("B3atht ya walid ? ");
+                        const resultSent = method.blockchainMethods.sendCoin(receiver, amount);
+                        console.log("resultSent: " + resultSent+typeof resultSent);
+                        Promise.resolve(resultSent).then((result) => { console.log("result: " + result) });
+                        console.log("B3atht ya walid ? ");
                       };
                     });
-                  };
-                }).catch((error) => {
-                  console.log(error);
-                  res.status(500).json({ error: error });
-                });
-              };
-            });
-         /* } else {
-            console.log("balance chwaya");
-          };*/
+                  });
+                };
+              }).catch((error) => {
+                console.log(error);
+                res.status(500).json({ error: error });
+              });
+            };
+          });
+          /* } else {
+             console.log("balance chwaya");
+           };*/
         } else {
           console.log("Ma aandkch flous");
         };

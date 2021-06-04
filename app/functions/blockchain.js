@@ -50,8 +50,7 @@ exports.blockchainMethods = blockchainConfig = {
 
 
   sendCoin: async function ( receiver, amount) {
-    console.log("account: "+  this.account);
-    const { transfer } = this.meta.methods;
+       const { transfer } = this.meta.methods;
     await transfer(receiver, amount)
       .send({ from: this.account })
       .then(console.log);
