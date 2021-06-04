@@ -19,11 +19,13 @@ const mg = mailgun({
 
 /***** MODELS IMPORT *****/
 const User = require("../models/user");
-const { use } = require("../routes/userRoutes");
 
 /***** FUNCTIONS GOES HERE *****/
 /* REGISTER */
-exports.signup = (req, res, next) => {
+exports.register = (req, res, next)=> {
+
+};
+/*exports.signup = (req, res, next) => {
   User.find({ email: req.body.email })
     .exec()
     .then((user) => {
@@ -42,7 +44,7 @@ exports.signup = (req, res, next) => {
               email: req.body.email,
               password: hash,
                address: newAddress,
-              //  privateKey: EthWallet.getPrivateKeyString(),
+              //  privateKey: EthWallet.getPrivateKeyString(),  ////// Must send it in mail
             });
             const token = jwt.sign(
               {
@@ -86,10 +88,19 @@ exports.signup = (req, res, next) => {
         });
       }
     });
-};
+}; */
 
 /* LOGIN */
 exports.login = (req, res, next) => {
+
+};
+
+/* IMPORT WALLET */
+exports.importWallet = (req, res, next) => {
+
+};
+
+/*exports.login = (req, res, next) => {
   User.find({ email: req.body.email })
     .exec()
     .then((user) => {
@@ -129,9 +140,10 @@ exports.login = (req, res, next) => {
         error: error,
       });
     });
-};
+}; */
+
 /* UPDATE PASSWORD */
-exports.updatePassword = (req, res, next) => {
+/*exports.updatePassword = (req, res, next) => {
   const id = req.body.id;
   const password = req.body.password;
   bcrypt.hash(password, 10, (error, hash) => {
@@ -151,9 +163,9 @@ exports.updatePassword = (req, res, next) => {
       );
     }
   });
-};
+};*/
 /* FORGET PASSWORD */
-exports.forgotPassword = (req, res, next) => {
+/*exports.forgotPassword = (req, res, next) => {
   User.findOne({ email: req.body.email }).exec((error, user) => {
     if (error || !user) {
       return res
@@ -178,7 +190,7 @@ exports.forgotPassword = (req, res, next) => {
           return res.status(400).json({ error: error });
         } else {
           /*return res.status(200).json({message : "good ! "});*/
-          mg.messages().send(data, function (error, body) {
+          /*mg.messages().send(data, function (error, body) {
             if (error) {
               return res.json({
                 error: error,
@@ -194,9 +206,9 @@ exports.forgotPassword = (req, res, next) => {
       });
     }
   });
-};
+}; */
 /* RESET PASSWORD */
-exports.resetPassword = (req, res, next) => {
+/*exports.resetPassword = (req, res, next) => {
   if (req.body.resetCode) {
     jwt.verify(req.body.resetCode, process.env.JWT_KEY, function (error, decodedToken) {
       if (error) {
@@ -214,7 +226,7 @@ exports.resetPassword = (req, res, next) => {
 
           }
         });*/
-        bcrypt.hash(req.body.password, 10, (error, hash) => {
+      /*  bcrypt.hash(req.body.password, 10, (error, hash) => {
           if (error) {
             return res.status(500).json({ error: error });
           } else {
@@ -236,9 +248,9 @@ exports.resetPassword = (req, res, next) => {
   } else {
     return res.status(401).json({ message: "invalid token" });
   }
-};
+};*/
 /* ACTIVATE ACCOUNT */
-exports.activateAccount = (req, res, next) => {
+/*exports.activateAccount = (req, res, next) => {
   const token = req.params.token;
   if (token) {
     jwt.verify(token, process.env.JWT_KEY, function (err, decodedToken) {
@@ -263,9 +275,9 @@ exports.activateAccount = (req, res, next) => {
   } else {
     return res.json({ error: "Something went wrong!" });
   }
-};
+};*/
 /* DELETE ACCOUNT */
-exports.deleteAcount = (req, res, next) => {
+/*exports.deleteAcount = (req, res, next) => {
   const id = req.body.id;
   User.remove({ _id: id })
     .exec()
@@ -276,9 +288,9 @@ exports.deleteAcount = (req, res, next) => {
       console.log(error);
       res.status(500).json({ error: error });
     });
-};
+};*/
 /* GET USER */
-exports.getUser = (req, res, next) => {
+/*exports.getUser = (req, res, next) => {
   const id = req.params.id;
   User.findById(id)
     .exec()
@@ -293,4 +305,4 @@ exports.getUser = (req, res, next) => {
       console.log(error);
       res.status(500).json({ error: error });
     });
-};
+};*/

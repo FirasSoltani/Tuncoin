@@ -25,7 +25,7 @@ firebaseAdmin.initializeApp({
 const User = require("../models/user");
 
 /***** FUNCTIONS GOES HERE *****/
-exports.transaction = (req, res, next) => {
+/*exports.transaction = (req, res, next) => {
   const amount = parseFloat(req.body.amount);
   const sender = req.body.sender;
   const receiver = req.body.receiver;
@@ -109,7 +109,7 @@ exports.transaction = (req, res, next) => {
           /* } else {
              console.log("balance chwaya");
            };*/
-        } else {
+/*        } else {
           console.log("Ma aandkch flous");
         };
       });
@@ -121,9 +121,13 @@ exports.transaction = (req, res, next) => {
     console.log(error);
     res.status(500).json({ error: error });
   });
-}
+} */
+
 /* NEW TRANSACTION */
-exports.transaction1 = (req, res, next) => {
+exports.transaction = (req, res, next) => {
+
+};
+/*exports.transaction1 = (req, res, next) => {
   const amount = parseFloat(req.body.amount);
 
   User.findById(req.body.idSender)
@@ -257,9 +261,13 @@ exports.transaction1 = (req, res, next) => {
       console.log(error);
       res.status(500).json({ error: error });
     });
-};
-/* BUY COIN*/
+}; */
+
+/* BUY COIN */
 exports.buy = (req, res, next) => {
+
+};
+/*exports.buy = (req, res, next) => {
   const amount = parseFloat(req.body.amount);
   User.findById(req.body.id)
     .exec()
@@ -313,4 +321,15 @@ exports.buy = (req, res, next) => {
       console.log(error);
       res.status(500).json({ error: error });
     });
+  };
+*/
+
+/* HISTORY */
+exports.history = (req, res, next) => {
+
+};
+
+/* GET BALANCE */
+exports.getBalance = (req, res, next) => {
+
 };

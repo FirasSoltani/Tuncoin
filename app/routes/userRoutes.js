@@ -10,11 +10,18 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
 /***** FUNCTIONS IMPORT *****/
-const { signup, login, updatePassword, deleteAcount, getUser, activateAccount, forgotPassword, resetPassword } = require('../functions/auth');
-const { transaction, buy } = require('../functions/transaction');
+/*const { signup, login, updatePassword, deleteAcount, getUser, activateAccount, forgotPassword, resetPassword } = require('../functions/auth');
+const { transaction, buy } = require('../functions/transaction');*/
+const {register, login, importWallet} = require('../functions/auth');
 
 /***** METHODES GOES HERE *****/
-/* Auth */
+/* AUTHENTIFICATION */
+router.post('/register', register);
+router.post('/login', login);
+router.post('/importWallet', importWallet);
+
+
+/* Auth 
 router.post('/signup', signup);
 router.post('/login', login);
 router.patch('/updatePassword', updatePassword);
@@ -22,10 +29,10 @@ router.delete('/delete', deleteAcount);
 router.get('/loggedUser/:id', getUser );
 router.get('/activation/:token', activateAccount);
 router.put('/forgotPassword', forgotPassword);
-router.put('/resetPassword', resetPassword);
+router.put('/resetPassword', resetPassword); */
 
-/* Transaction */
+/* Transaction 
 router.post('/transaction', transaction);
-router.post('/buy', buy);
+router.post('/buy', buy); */
 
 module.exports = router;

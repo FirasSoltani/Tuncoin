@@ -17,7 +17,7 @@ exports.blockchainMethods = blockchainConfig = {
 
   start: async function () {
     this.web3 = new Web3(
-      new Web3.providers.HttpProvider("http://127.0.0.1:7545")
+      new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/d595e4c3fc6d41218e7193c1ecc2f6a8")
     );
     try {
       // get contract instance
