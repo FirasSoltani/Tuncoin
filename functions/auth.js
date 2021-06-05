@@ -41,33 +41,33 @@ exports.signup = (req, res, next) => {
           address: account.address,
         });
         user.save().then((result) => {
-          console.log("PrivateKey:"+account.privateKey);
+          console.log("PrivateKey:" + account.privateKey);
           // SEND PRIVATE KEY VIA MAIL !!! MUST FIX CREDENTIALS OF MAILGUN
-         /*const data = {
-            from: "Tuncoin Team <no-reply@tuncoin.tn>",
-            to: req.body.email,
-            subject: "Account Key",
-            html: `<h2> Please Save your private key </h2>
-                <p> PrivateKey: ${account.privateKey}</p>`,
-          };
-          mg.messages().send(data, function (error, body) {
-            if (error) {
-              return res.status(500).json({
-                error: error,
-                message: "Credentials MailGun ERROR"
-              });
-            } else {
-              return res.status(200).json({
-                message: "Mail sent! ",
-                user: result,
-              });
-            }
-          }); */
-          return res.status(200).json({privateKey: account.privateKey});
+          /*const data = {
+             from: "Tuncoin Team <no-reply@tuncoin.tn>",
+             to: req.body.email,
+             subject: "Account Key",
+             html: `<h2> Please Save your private key </h2>
+                 <p> PrivateKey: ${account.privateKey}</p>`,
+           };
+           mg.messages().send(data, function (error, body) {
+             if (error) {
+               return res.status(500).json({
+                 error: error,
+                 message: "Credentials MailGun ERROR"
+               });
+             } else {
+               return res.status(200).json({
+                 message: "Mail sent! ",
+                 user: result,
+               });
+             }
+           }); */
+          return res.status(200).json({ privateKey: account.privateKey });
         });
       });
     }
-  }).catch((err) => {return res.status(400).json({error: err})});
+  }).catch((err) => { return res.status(400).json({ error: err }) });
 
 };
 /*exports.signup = (req, res, next) => {
@@ -139,7 +139,7 @@ exports.signup = (req, res, next) => {
 exports.login = (req, res, next) => {
   const privateKey = req.body.privateKey
 
-  address =  method.blockchainMethods.loginToAccount(privateKey);
+  address = method.blockchainMethods.loginToAccount(privateKey);
   address.then((value) => {
     req.session.address = value;
     return res.status(200).send(value.address);
@@ -153,12 +153,15 @@ exports.importWallet = (req, res, next) => {
     .exec()
     .then((user) => {
       try {
-        if (user <= 1) {
+        if (user.length === 0) {
           const account = this.web3.eth.accounts.privateKeyToAccount(privateKey);
           const user = new User({
             _id: new mongoose.Types.ObjectId(),
             email: req.body.email,
             address: account.address,
+          });
+          user.save().then((result) => {
+            console.log("User Saved!");
           });
         }
       } catch {
@@ -168,6 +171,7 @@ exports.importWallet = (req, res, next) => {
       address = method.blockchainMethods.loginToAccount(privateKey);
       address.then((value) => {
         req.session.address = value;
+        console.log(req.session.address);
         return res.status(200).send(value);
       });
     });
