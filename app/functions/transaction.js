@@ -10,11 +10,7 @@ const firebaseAdmin = require("firebase-admin");
 const method = require("./blockchain");
 const http = require('http');
 
-/***** MAILGUN SETTINGS *****/
-const mg = mailgun({
-  apiKey: process.env.MAILGUN_API_KEY,
-  domain: process.env.MAILGUN_DOMAIN,
-});
+
 
 /***** FIREBASE NOTIFICATION SETTINGS *****/
 var serviceAccount = require("../tuncoin-2021-firebase-adminsdk-1utoy-b5d8b97014.json");

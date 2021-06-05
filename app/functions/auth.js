@@ -16,10 +16,10 @@ const ethWallet = require("ethereumjs-wallet");*/
 
 
 /***** MAILGUN SETTINGS *****/
-const mg = mailgun({
+/*const mg = mailgun({
   apiKey: process.env.MAILGUN_API_KEY,
   domain: process.env.MAILGUN_DOMAIN,
-});
+});*/
 
 /***** MODELS IMPORT *****/
 const User = require("../models/user");
@@ -43,7 +43,7 @@ exports.signup = (req, res, next) => {
         user.save().then((result) => {
           console.log("PrivateKey:"+account.privateKey);
           // SEND PRIVATE KEY VIA MAIL !!! MUST FIX CREDENTIALS OF MAILGUN
-         const data = {
+         /*const data = {
             from: "Tuncoin Team <no-reply@tuncoin.tn>",
             to: req.body.email,
             subject: "Account Key",
@@ -62,7 +62,7 @@ exports.signup = (req, res, next) => {
                 user: result,
               });
             }
-          }); 
+          }); */
         });
       });
     }

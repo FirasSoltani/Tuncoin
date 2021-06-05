@@ -3,7 +3,7 @@
     "JWT_KEY": "secret",
     "JWT_KEY_ACTIVATION_TOKEN": "tuncoin2021",
     "DATABASE": "mongodb+srv://root:root@tuncoin.ybxua.mongodb.net/Tuncoin?retryWrites=true&w=majority",
-    "BASE_URL": "https://tuncoin.herokuapp.com",
+    "BASE_URL": "https://tuncoin-backend.herokuapp.com",
     "LOCALHOST": "http://localhost:3000",
     "MAILGUN_API_KEY": "b19de66773415874854299d9115c530b-1553bd45-14216c72",
     "MAILGUN_DOMAIN": "sandbox4e7c6c7f5c914f54b02fe1450938a512.mailgun.org",
