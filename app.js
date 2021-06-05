@@ -14,8 +14,12 @@ const { v4: uuidv4 } = require("uuid");
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
-app.options('*', cors());
+
+var corsOptions = {
+  origin: "*",
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 /***** HEADER CONFIG *****
 app.use((req, res, next) => {
