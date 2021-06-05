@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import metaCoinArtifact from "../../build/contracts/TuniCoin.json";
+import metaCoinArtifact from "../build/contracts/TuniCoin.json";
 
 const App = {
   web3: null,

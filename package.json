@@ -1,5 +1,5 @@
 {
-  "name": "app",
+  "name": "tuncoin",
   "version": "1.0.0",
   "description": "",
   "private": true,
@@ -8,7 +8,7 @@
     "build": "webpack",
     "dev": "webpack-dev-server",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^5.0.5",
