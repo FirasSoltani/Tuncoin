@@ -13,10 +13,10 @@ const http = require('http');
 
 
 /***** FIREBASE NOTIFICATION SETTINGS *****/
-var serviceAccount = require("../tuncoin-2021-firebase-adminsdk-1utoy-b5d8b97014.json");
+/*var serviceAccount = require("../tuncoin-2021-firebase-adminsdk-1utoy-b5d8b97014.json");
 firebaseAdmin.initializeApp({
   credential: firebaseAdmin.credential.cert(serviceAccount)
-});
+}); */
 
 /***** MODELS IMPORT *****/
 const User = require("../models/user");

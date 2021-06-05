@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 var cors = require('cors');
 var Web3 = require("web3");
-var metaCoinArtifact = require("../build/contracts/TuniCoin.json");
+var metaCoinArtifact = require("./build/contracts/TuniCoin.json");
 var session = require("express-session");
 const { v4: uuidv4 } = require("uuid");
 

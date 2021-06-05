@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const mailgun = require("mailgun-js");
 const firebaseAdmin = require("firebase-admin");
-var metaCoinArtifact = require("../../build/contracts/TuniCoin.json");
+var metaCoinArtifact = require("../build/contracts/TuniCoin.json");
 var Web3 = require("web3");
 var Tx = require("ethereumjs-tx").Transaction;
 /***** BLOCKCHAIN CONFIG *****/
