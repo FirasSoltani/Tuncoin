@@ -7,9 +7,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const mailgun = require("mailgun-js");
 const method = require("./blockchain");
-var session = require("express-session");
 var Tx = require("ethereumjs-tx").Transaction;
-const { v4: uuidv4 } = require("uuid");
+const nodemailer = require('nodemailer');
 /*const Web3 = require("web3");
 const Tuncoin = require("../build/contracts/Tuncoin.json");
 const ethWallet = require("ethereumjs-wallet");*/
@@ -43,6 +42,30 @@ exports.signup = (req, res, next) => {
         user.save().then((result) => {
           console.log("PrivateKey:" + account.privateKey);
           // SEND PRIVATE KEY VIA MAIL !!! MUST FIX CREDENTIALS OF MAILGUN
+          var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+              user: process.env.EMAIL_SENDER,
+              pass: process.env.PASSWORD_SENDER
+            }
+          });
+
+          var mailOptions = {
+            from: 'Tuncoin Team <no-reply@tuncoin.tn>',
+            to: req.body.email,
+            subject: 'Wallet Private Key',
+            html: `<h2> Please Save your private key </h2><p> PrivateKey: ${account.privateKey}</p>`,
+          };
+
+          transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+              console.log(error);
+              return res.status(500).json({ error: error});
+            } else {
+              console.log('Email sent: ' + info.response);
+              return res.status(200).json({ privateKey: account.privateKey });
+            }
+          });
           /*const data = {
              from: "Tuncoin Team <no-reply@tuncoin.tn>",
              to: req.body.email,
@@ -63,7 +86,7 @@ exports.signup = (req, res, next) => {
                });
              }
            }); */
-          return res.status(200).json({ privateKey: account.privateKey });
+          
         });
       });
     }
