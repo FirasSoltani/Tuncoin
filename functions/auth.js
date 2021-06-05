@@ -167,7 +167,7 @@ exports.importWallet = (req, res, next) => {
       address = method.blockchainMethods.loginToAccount(privateKey);
       address.then((value) => {
         req.session.address = value;
-        return res.status(200).res.send(value);
+        return res.status(200).send(value);
       });
     });
 };
