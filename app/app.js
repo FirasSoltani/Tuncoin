@@ -7,6 +7,9 @@ const mongoose = require('mongoose');
 var cors = require('cors');
 var Web3 = require("web3");
 var metaCoinArtifact = require("../build/contracts/TuniCoin.json");
+var session = require("express-session");
+var Tx = require("ethereumjs-tx").Transaction;
+const { v4: uuidv4 } = require("uuid");
 
 /***** UTILS CONFIG *****/
 app.use(morgan('dev'));
@@ -30,6 +33,28 @@ mongoose.connect(process.env.DATABASE, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
+
+/***** SESSION CONFIG ******/
+app.use(
+    session({
+      genid: function () {
+        return uuidv4();
+      },
+      secret: "tunicoin_pim",
+      resave: false,
+      name: "tunicoin",
+      saveUninitialized: true,
+      cookie: { secure: false },
+    })
+  );
+  app.use((req, res, next) => {
+    // Check if we've already initialised a session
+    if (!req.session.address) {
+      // Initialise our variables on the session object (that's persisted across requests by the same user
+      req.session.address = {};
+    }
+    next();
+  });
 
 /***** ROUTES IMPORT *****/
 const usersRoutes = require('./routes/userRoutes');

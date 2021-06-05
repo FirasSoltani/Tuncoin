@@ -7,9 +7,13 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const mailgun = require("mailgun-js");
 const method = require("./blockchain");
+var session = require("express-session");
+var Tx = require("ethereumjs-tx").Transaction;
+const { v4: uuidv4 } = require("uuid");
 /*const Web3 = require("web3");
 const Tuncoin = require("../build/contracts/Tuncoin.json");
 const ethWallet = require("ethereumjs-wallet");*/
+
 
 /***** MAILGUN SETTINGS *****/
 const mg = mailgun({
@@ -24,12 +28,12 @@ const User = require("../models/user");
 /* REGISTER */
 exports.signup = (req, res, next) => {
   User.find({ email: req.body.email }).exec().then((user) => {
-    if (user >= 1) {
+    console.log(user);
+    if (user.length === 1) {
       return res.status(401).json({ message: "Account Exists" });
     } else {
       console.log("jawek behi");
 
-      method.blockchainMethods.start();
       Promise.resolve(method.blockchainMethods.createAccount()).then((account) => {
         const user = new User({
           _id: new mongoose.Types.ObjectId(),
@@ -37,8 +41,9 @@ exports.signup = (req, res, next) => {
           address: account.address,
         });
         user.save().then((result) => {
+          console.log("PrivateKey:"+account.privateKey);
           // SEND PRIVATE KEY VIA MAIL !!! MUST FIX CREDENTIALS OF MAILGUN
-          const data = {
+         const data = {
             from: "Tuncoin Team <no-reply@tuncoin.tn>",
             to: req.body.email,
             subject: "Account Key",
@@ -47,7 +52,7 @@ exports.signup = (req, res, next) => {
           };
           mg.messages().send(data, function (error, body) {
             if (error) {
-              return res.json({
+              return res.status(500).json({
                 error: error,
                 message: "Credentials MailGun ERROR"
               });
@@ -57,11 +62,11 @@ exports.signup = (req, res, next) => {
                 user: result,
               });
             }
-          });
+          }); 
         });
       });
     }
-  });
+  }).catch((err) => {return res.status(400).json({error: err})});
 
 };
 /*exports.signup = (req, res, next) => {
@@ -131,7 +136,13 @@ exports.signup = (req, res, next) => {
 
 /* LOGIN */
 exports.login = (req, res, next) => {
+  const privateKey = req.body.privateKey
 
+  address =  method.blockchainMethods.loginToAccount(privateKey);
+  address.then((value) => {
+    req.session.address = value;
+    return res.status(200).send(value.address);
+  });
 };
 
 /* IMPORT WALLET */
@@ -140,18 +151,24 @@ exports.importWallet = (req, res, next) => {
   User.find({ email: req.body.email })
     .exec()
     .then((user) => {
-      try{
-      if (user <= 1) {
-        const account = this.web3.eth.accounts.privateKeyToAccount(privateKey);
-        const user = new User({
-          _id: new mongoose.Types.ObjectId(),
-          email: req.body.email,
-          address: account.address,
-        });
-      }}catch{
+      try {
+        if (user <= 1) {
+          const account = this.web3.eth.accounts.privateKeyToAccount(privateKey);
+          const user = new User({
+            _id: new mongoose.Types.ObjectId(),
+            email: req.body.email,
+            address: account.address,
+          });
+        }
+      } catch {
         console.log("Error in importing wallet");
+        return res.status(500).json({ error: "ERROR CATCH" })
       }
-      return res.status(200).json({ message: "Login" });
+      address = method.blockchainMethods.loginToAccount(privateKey);
+      address.then((value) => {
+        req.session.address = value;
+        return res.status(200).res.send(value);
+      });
     });
 };
 

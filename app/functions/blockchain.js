@@ -27,10 +27,10 @@ exports.blockchainMethods = blockchainConfig = {
         metaCoinArtifact.abi,
         deployedNetwork.address
       );
-      const ethaccounts = await this.web3.eth.getAccounts();
+     /* const ethaccounts = await this.web3.eth.getAccounts();
       console.log(ethaccounts);
       this.account = ethaccounts[0];
-      this.refreshBalance(this.account);
+      this.refreshBalance(this.account);*/
     } catch (error) {
       console.log(error);
     }
@@ -40,12 +40,14 @@ exports.blockchainMethods = blockchainConfig = {
     try {
       return this.web3.eth.accounts.privateKeyToAccount(privateKey);
     } catch {
+
       console.log("false: " + privateKey);
     }
   },
 
   createAccount: async function () {
     let account = this.web3.eth.accounts.create();
+    console.log("account"+account);
     return account;
   },
 
