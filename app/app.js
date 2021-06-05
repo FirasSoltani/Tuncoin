@@ -8,7 +8,6 @@ var cors = require('cors');
 var Web3 = require("web3");
 var metaCoinArtifact = require("../build/contracts/TuniCoin.json");
 var session = require("express-session");
-var Tx = require("ethereumjs-tx").Transaction;
 const { v4: uuidv4 } = require("uuid");
 
 /***** UTILS CONFIG *****/

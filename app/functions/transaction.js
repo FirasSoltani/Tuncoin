@@ -8,6 +8,7 @@ const bcrypt = require("bcrypt");
 const mailgun = require("mailgun-js");
 const firebaseAdmin = require("firebase-admin");
 const method = require("./blockchain");
+const http = require('http');
 
 /***** MAILGUN SETTINGS *****/
 const mg = mailgun({
@@ -125,7 +126,19 @@ const User = require("../models/user");
 
 /* NEW TRANSACTION */
 exports.transaction = (req, res, next) => {
-
+  console.log(req);
+  Success = method.blockchainMethods.sendCoin(
+    req.body.receiver,
+    req.session.address,
+    req.body.amount
+  );
+  if (Success) {
+    method.blockchainMethods.refreshBalance(req.session.address.address).then((value) => {
+      res.send("Success new balance is : " + value);
+    });
+  } else {
+    res.send("Failed");
+  }
 };
 /*exports.transaction1 = (req, res, next) => {
   const amount = parseFloat(req.body.amount);
@@ -265,7 +278,14 @@ exports.transaction = (req, res, next) => {
 
 /* BUY COIN */
 exports.buy = (req, res, next) => {
-
+  result = method.blockchainMethods.sendCoin(
+    req.session.address.address,
+    method.blockchainMethods.account,
+    req.body.amount
+  );
+  result.then((value) => {
+    res.send(value);
+  });
 };
 /*exports.buy = (req, res, next) => {
   const amount = parseFloat(req.body.amount);
@@ -326,10 +346,28 @@ exports.buy = (req, res, next) => {
 
 /* HISTORY */
 exports.history = (req, res, next) => {
-
+    http.get(
+      "http://api-ropsten.etherscan.io/api?module=account&action=tokentx&address=" +
+      req.session.address.address +
+        "&startblock=0&endblock=99999999&sort=asc&apikey=4EDVCVX5Q9UJEQPNM32MD19BQS1DB9XMAN",
+      (value) => {
+        var result = "";
+        value.setEncoding("utf8");
+        value.on("data", (data) => {
+          result += data;
+        });
+        value.on("end", () => {
+          res.send(JSON.parse(result));
+        });
+      }
+    );
 };
 
 /* GET BALANCE */
 exports.getBalance = (req, res, next) => {
-
+  console.log(req.session.address.address);
+  balance = method.blockchainMethods.refreshBalance(req.session.address.address);
+  balance.then((value) => {
+    res.send(value);
+  });
 };

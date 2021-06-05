@@ -9,6 +9,7 @@ const mailgun = require("mailgun-js");
 const firebaseAdmin = require("firebase-admin");
 var metaCoinArtifact = require("../../build/contracts/TuniCoin.json");
 var Web3 = require("web3");
+var Tx = require("ethereumjs-tx").Transaction;
 /***** BLOCKCHAIN CONFIG *****/
 exports.blockchainMethods = blockchainConfig = {
   web3: null,
@@ -27,10 +28,14 @@ exports.blockchainMethods = blockchainConfig = {
         metaCoinArtifact.abi,
         deployedNetwork.address
       );
-     /* const ethaccounts = await this.web3.eth.getAccounts();
-      console.log(ethaccounts);
-      this.account = ethaccounts[0];
-      this.refreshBalance(this.account);*/
+      /* const ethaccounts = await this.web3.eth.getAccounts();
+       console.log(ethaccounts);
+       this.account = ethaccounts[0];
+       this.refreshBalance(this.account);*/
+      const acc = this.web3.eth.accounts.privateKeyToAccount(
+        "871e743d97cdfdadf973dc783cfa4726a7d77a00d34964f44dfd9f134417519d"
+      );
+      this.account = acc;
     } catch (error) {
       console.log(error);
     }
@@ -47,7 +52,7 @@ exports.blockchainMethods = blockchainConfig = {
 
   createAccount: async function () {
     let account = this.web3.eth.accounts.create();
-    console.log("account"+account);
+    console.log("account" + account);
     return account;
   },
 
@@ -59,12 +64,41 @@ exports.blockchainMethods = blockchainConfig = {
   },
 
 
-  sendCoin: async function (receiver, amount) {
+  sendCoin: async function (receiver, sender, amount) {
     const { transfer } = this.meta.methods;
-    await transfer(receiver, amount)
-      .send({ from: this.account })
-      .then(console.log);
-    return true;
+    const tx = await transfer(receiver, amount);
+    const rawTx = {
+      nonce: await this.web3.eth.getTransactionCount(sender.address, "pending"),
+      from: sender.address,
+      to: this.meta._address,
+      gasPrice: this.web3.utils.toHex(this.web3.utils.toWei("50", "gwei")),
+      gasLimit: this.web3.utils.toHex(2100000),
+      value: "0x0",
+      chainId: this.web3.utils.toHex(3),
+      data: tx.encodeABI(),
+    };
+    console.log(rawTx);
+    const finalTx = new Tx(rawTx, {
+      chain: "ropsten",
+    });
+    finalTx.sign(Buffer.from(sender.privateKey.substring(2), "hex"));
+    await this.web3.eth
+      .sendSignedTransaction("0x" + finalTx.serialize().toString("hex"))
+      .once("transactionHash", function (hash) {
+        console.log("txHash", hash);
+      })
+      .once("receipt", function (receipt) {
+        console.log("receipt", receipt);
+      })
+      .on("confirmation", function (confNumber, receipt) {
+        console.log("confNumber", confNumber, "receipt", receipt);
+      })
+      .on("error", function (error) {
+        console.log("error", error);
+      })
+      .then(function (receipt) {
+        console.log("trasaction mined!", receipt);
+      });
   },
 
   getGasPrice: async function () {
