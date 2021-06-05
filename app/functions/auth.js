@@ -37,7 +37,7 @@ exports.signup = (req, res, next) => {
           address: account.address,
         });
         user.save().then((result) => {
-          // SEND PRIVATE KEY VIA MAIL !!!
+          // SEND PRIVATE KEY VIA MAIL !!! MUST FIX CREDENTIALS OF MAILGUN
           const data = {
             from: "Tuncoin Team <no-reply@tuncoin.tn>",
             to: req.body.email,
