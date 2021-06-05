@@ -12,11 +12,11 @@ const User = require('../models/user');
 /***** FUNCTIONS IMPORT *****/
 /*const { signup, login, updatePassword, deleteAcount, getUser, activateAccount, forgotPassword, resetPassword } = require('../functions/auth');
 const { transaction, buy } = require('../functions/transaction');*/
-const {register, login, importWallet} = require('../functions/auth');
+const { signup, login, importWallet } = require('../functions/auth');
 
 /***** METHODES GOES HERE *****/
 /* AUTHENTIFICATION */
-router.post('/register', register);
+router.post('/signup', signup);
 router.post('/login', login);
 router.post('/importWallet', importWallet);
 

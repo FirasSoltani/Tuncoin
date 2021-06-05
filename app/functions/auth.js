@@ -22,7 +22,46 @@ const User = require("../models/user");
 
 /***** FUNCTIONS GOES HERE *****/
 /* REGISTER */
-exports.register = (req, res, next)=> {
+exports.signup = (req, res, next) => {
+  User.find({ email: req.body.email }).exec().then((user) => {
+    if (user >= 1) {
+      return res.status(401).json({ message: "Account Exists" });
+    } else {
+      console.log("jawek behi");
+
+      method.blockchainMethods.start();
+      Promise.resolve(method.blockchainMethods.createAccount()).then((account) => {
+        const user = new User({
+          _id: new mongoose.Types.ObjectId(),
+          email: req.body.email,
+          address: account.address,
+        });
+        user.save().then((result) => {
+          // SEND PRIVATE KEY VIA MAIL !!!
+          const data = {
+            from: "Tuncoin Team <no-reply@tuncoin.tn>",
+            to: req.body.email,
+            subject: "Account Key",
+            html: `<h2> Please Save your private key </h2>
+                <p> PrivateKey: ${account.privateKey}</p>`,
+          };
+          mg.messages().send(data, function (error, body) {
+            if (error) {
+              return res.json({
+                error: error,
+                message: "Credentials MailGun ERROR"
+              });
+            } else {
+              return res.status(200).json({
+                message: "Mail sent! ",
+                user: result,
+              });
+            }
+          });
+        });
+      });
+    }
+  });
 
 };
 /*exports.signup = (req, res, next) => {
@@ -97,7 +136,23 @@ exports.login = (req, res, next) => {
 
 /* IMPORT WALLET */
 exports.importWallet = (req, res, next) => {
-
+  const privateKey = req.body.privateKey
+  User.find({ email: req.body.email })
+    .exec()
+    .then((user) => {
+      try{
+      if (user <= 1) {
+        const account = this.web3.eth.accounts.privateKeyToAccount(privateKey);
+        const user = new User({
+          _id: new mongoose.Types.ObjectId(),
+          email: req.body.email,
+          address: account.address,
+        });
+      }}catch{
+        console.log("Error in importing wallet");
+      }
+      return res.status(200).json({ message: "Login" });
+    });
 };
 
 /*exports.login = (req, res, next) => {
@@ -190,22 +245,22 @@ exports.importWallet = (req, res, next) => {
           return res.status(400).json({ error: error });
         } else {
           /*return res.status(200).json({message : "good ! "});*/
-          /*mg.messages().send(data, function (error, body) {
-            if (error) {
-              return res.json({
-                error: error,
-                message: "error sending mail",
-              });
-            } else {
-              return res.status(200).json({
-                message: "Mail sent! ",
-              });
-            }
-          });
-        }
-      });
-    }
-  });
+/*mg.messages().send(data, function (error, body) {
+  if (error) {
+    return res.json({
+      error: error,
+      message: "error sending mail",
+    });
+  } else {
+    return res.status(200).json({
+      message: "Mail sent! ",
+    });
+  }
+});
+}
+});
+}
+});
 }; */
 /* RESET PASSWORD */
 /*exports.resetPassword = (req, res, next) => {
@@ -226,28 +281,28 @@ exports.importWallet = (req, res, next) => {
 
           }
         });*/
-      /*  bcrypt.hash(req.body.password, 10, (error, hash) => {
-          if (error) {
-            return res.status(500).json({ error: error });
+/*  bcrypt.hash(req.body.password, 10, (error, hash) => {
+    if (error) {
+      return res.status(500).json({ error: error });
+    } else {
+      User.findOneAndUpdate(
+        { resetCode: req.body.resetCode },
+        { $set: { password: hash } },
+        function (err, result) {
+          if (err) {
+            res.send(err);
           } else {
-            User.findOneAndUpdate(
-              { resetCode: req.body.resetCode },
-              { $set: { password: hash } },
-              function (err, result) {
-                if (err) {
-                  res.send(err);
-                } else {
-                  res.status(200).send(result);
-                }
-              }
-            );
+            res.status(200).send(result);
           }
-        });
-      }
-    });
-  } else {
-    return res.status(401).json({ message: "invalid token" });
-  }
+        }
+      );
+    }
+  });
+}
+});
+} else {
+return res.status(401).json({ message: "invalid token" });
+}
 };*/
 /* ACTIVATE ACCOUNT */
 /*exports.activateAccount = (req, res, next) => {

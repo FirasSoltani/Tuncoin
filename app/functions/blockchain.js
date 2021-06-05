@@ -36,9 +36,17 @@ exports.blockchainMethods = blockchainConfig = {
     }
   },
 
+  loginToAccount: async function (privateKey) {
+    try {
+      return this.web3.eth.accounts.privateKeyToAccount(privateKey);
+    } catch {
+      console.log("false: " + privateKey);
+    }
+  },
+
   createAccount: async function () {
     let account = this.web3.eth.accounts.create();
-    return account.address;
+    return account;
   },
 
   refreshBalance: async function (address) {
@@ -49,8 +57,8 @@ exports.blockchainMethods = blockchainConfig = {
   },
 
 
-  sendCoin: async function ( receiver, amount) {
-       const { transfer } = this.meta.methods;
+  sendCoin: async function (receiver, amount) {
+    const { transfer } = this.meta.methods;
     await transfer(receiver, amount)
       .send({ from: this.account })
       .then(console.log);

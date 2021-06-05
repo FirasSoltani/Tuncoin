@@ -34,10 +34,12 @@ mongoose.connect(process.env.DATABASE, {
 /***** ROUTES IMPORT *****/
 const usersRoutes = require('./routes/userRoutes');
 const cryptocurrencyRoutes = require('./routes/cryptocurrencyRoutes');
+const transactionRoutes = require('./routes/transactionRoutes')
 //const blockchainRoutes = require('./routes/blockchainRoutes')
 
 /***** ROUTES *****/
-app.use('', usersRoutes);
+app.use('/auth', usersRoutes);
+app.use('/transaction', transactionRoutes);
 app.use('/cryptocurrency', cryptocurrencyRoutes);
 //app.use('/blockchain', blockchainRoutes);
 
