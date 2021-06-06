@@ -130,10 +130,35 @@ exports.transaction = (req, res, next) => {
   );
   if (Success) {
     method.blockchainMethods.refreshBalance(req.session.address.address).then((value) => {
-      return res.status(200).json({return:  value});
+      var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_SENDER,
+          pass: process.env.PASSWORD_SENDER
+        }
+      });
+
+     /* User.find({ afr: req.body.receiver }).exec().then((user) => {});
+      var mailOptions = {
+        from: 'Tuncoin Team <no-reply@tuncoin.tn>',
+        to: req.body.email,
+        subject: 'Transaction',
+        html: `<h2> Your transaction of ${req.body.amount} TNC has been successfully sent to ${req.body.receiver}</h2>`,
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+          return res.status(500).json({ error: error});
+        } else {
+          console.log('Email sent: ' + info.response);
+         
+        }
+      });*/
+      return res.status(200).json({result:  value});
     });
   } else {
-   return res.status(403).json({return : "failed"});
+   return res.status(403).json({result : "failed"});
   }
 };
 /*exports.transaction1 = (req, res, next) => {
@@ -280,7 +305,7 @@ exports.buy = (req, res, next) => {
     req.body.amount
   );
   result.then((value) => {
-   return res.status(200).send({return : value});
+   return res.status(200).json({result : true});
   });
 };
 /*exports.buy = (req, res, next) => {
@@ -361,9 +386,9 @@ exports.history = (req, res, next) => {
 
 /* GET BALANCE */
 exports.getBalance = (req, res, next) => {
-  console.log(req.session.address.address);
+ // console.log(req.session.address.address);
   balance = method.blockchainMethods.refreshBalance(req.session.address.address);
   balance.then((value) => {
-    return res.status(200).status({ balance: value });
+    return res.status(200).json({ balance: value });
   });
 };
