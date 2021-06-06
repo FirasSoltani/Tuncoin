@@ -43,11 +43,13 @@ exports.signup = (req, res, next) => {
           console.log("PrivateKey:" + account.privateKey);
           // SEND PRIVATE KEY VIA MAIL !!! MUST FIX CREDENTIALS OF MAILGUN
           var transporter = nodemailer.createTransport({
-            service: 'gmail',
+            port: 465,               // true for 465, false for other ports
+            host: "smtp.gmail.com",
             auth: {
               user: process.env.EMAIL_SENDER,
               pass: process.env.PASSWORD_SENDER
-            }
+            },
+            secure: true,
           });
 
           var mailOptions = {
